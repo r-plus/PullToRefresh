@@ -35,11 +35,13 @@
     UILabel *refreshLabel;
     UIImageView *refreshArrow;
     UIActivityIndicatorView *refreshSpinner;
-    BOOL isDragging;
-    BOOL isLoading;
-    NSString *textPull;
-    NSString *textRelease;
-    NSString *textLoading;
+	  BOOL isDragging;
+	  BOOL isLoading;
+	  BOOL isStage2;
+  	NSString *textPull;
+  	NSString *textRelease;
+	  NSString *text2Stage;
+		NSString *textLoading;
 }
 
 @property (nonatomic, retain) UIView *refreshHeaderView;
@@ -48,11 +50,13 @@
 @property (nonatomic, retain) UIActivityIndicatorView *refreshSpinner;
 @property (nonatomic, copy) NSString *textPull;
 @property (nonatomic, copy) NSString *textRelease;
+@property (nonatomic, copy) NSString *textStage2;
 @property (nonatomic, copy) NSString *textLoading;
 
 - (void)addPullToRefreshHeader;
 - (void)startLoading;
 - (void)stopLoading;
 - (void)refresh;
+- (void)stage2Function;
 
 @end

@@ -31,18 +31,20 @@
 #import "PullRefreshTableViewController.h"
 
 #define REFRESH_HEADER_HEIGHT 52.0f
+#define STAGE_TWO_HEIGHT 52.0f
 
 
 @implementation PullRefreshTableViewController
 
-@synthesize textPull, textRelease, textLoading, refreshHeaderView, refreshLabel, refreshArrow, refreshSpinner;
+@synthesize textPull, textRelease, textStage2, textLoading, refreshHeaderView, refreshLabel, refreshArrow, refreshSpinner;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self != nil) {
-        textPull = [[NSString alloc] initWithString:@"Pull down to refresh..."];
-        textRelease = [[NSString alloc] initWithString:@"Release to refresh..."];
-        textLoading = [[NSString alloc] initWithString:@"Loading..."];
+			textPull = [[NSString alloc] initWithString:@"Pull down to refresh..."];
+			textRelease = [[NSString alloc] initWithString:@"Release to refresh..."];
+			textStage2 = [[NSString alloc] initWithString:@"Release to 2stage function..."];
+      textLoading = [[NSString alloc] initWithString:@"Loading..."];
     }
     return self;
 }
@@ -91,8 +93,14 @@
     } else if (isDragging && scrollView.contentOffset.y < 0) {
         // Update the arrow direction and label
         [UIView beginAnimations:nil context:NULL];
-        if (scrollView.contentOffset.y < -REFRESH_HEADER_HEIGHT) {
+		    if (scrollView.contentOffset.y < (-REFRESH_HEADER_HEIGHT -STAGE_TWO_HEIGHT)) {
+			      // stage 2!
+  					isStage2 = YES;
+			      refreshLabel.text = self.textStage2;
+			      [refreshArrow layer].transform = CATransform3DMakeRotation(M_PI * -0.5, 0, 0, 1);
+			  }	else if (scrollView.contentOffset.y < -REFRESH_HEADER_HEIGHT) {
             // User is scrolling above the header
+  					isStage2 = NO;
             refreshLabel.text = self.textRelease;
             [refreshArrow layer].transform = CATransform3DMakeRotation(M_PI, 0, 0, 1);
         } else { // User is scrolling somewhere within the header
@@ -125,7 +133,10 @@
     [UIView commitAnimations];
 
     // Refresh action!
-    [self refresh];
+	  if (isStage2)
+			[self stage2Function];
+    else
+			[self refresh];
 }
 
 - (void)stopLoading {
@@ -149,9 +160,15 @@
 }
 
 - (void)refresh {
-    // This is just a demo. Override this method with your custom reload action.
-    // Don't forget to call stopLoading at the end.
-    [self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
+	// This is just a demo. Override this method with your custom reload action.
+	// Don't forget to call stopLoading at the end.
+	[self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
+}
+
+- (void)stage2Function {
+	// This is just a demo. Override this method with your custom reload action.
+	// Don't forget to call stopLoading at the end.
+	[self performSelector:@selector(stopLoading) withObject:nil afterDelay:2.0];
 }
 
 - (void)dealloc {
@@ -160,7 +177,8 @@
     [refreshArrow release];
     [refreshSpinner release];
     [textPull release];
-    [textRelease release];
+	  [textRelease release];
+  	[textStage2 release];
     [textLoading release];
     [super dealloc];
 }
